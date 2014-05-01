@@ -1,8 +1,16 @@
 import cv2
+import matplotlib.pyplot as plt
 
 def show_image(img, name='image'):
   cv2.imshow(name, img)
   cv2.waitKey(-1)
+
+def show_image2(img):
+  if len(img.shape) == 2:
+    plt.imshow(img, cmap=plt.cm.gray)
+  else:
+    plt.imshow(img)
+  plt.show()
 
 def dall():
   cv2.destroyAllWindows()
