@@ -1,4 +1,4 @@
 cesvision
 =========
 
-Some utilities to complete some common tasks in Computer Vision in fewer key strokes.
+This repo stores some methods that I use frequently in my Computer Vision projects.
