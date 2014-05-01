@@ -6,3 +6,6 @@ def show_image(img, name='image'):
 
 def dall():
   cv2.destroyAllWindows()
+
+def to_gray(im):
+  return cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
