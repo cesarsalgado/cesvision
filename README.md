@@ -1,1 +1,1 @@
-My own library for Computer Vision. It adds things that I didn't find in OpenCV.
+Some utilities to complete some common tasks (which are common for me) in fewer key strokes.
