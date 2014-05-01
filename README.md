@@ -1,1 +1,1 @@
-Some utilities to complete some common tasks (which are common for me) in fewer key strokes.
+Some utilities to complete some common tasks in Computer Vision in fewer key strokes.
