@@ -7,9 +7,9 @@ def show_image(img, name='image'):
 
 def show_image2(img):
   if len(img.shape) == 2:
-    plt.imshow(img, cmap=plt.cm.gray)
+    plt.imshow(img, cmap=plt.cm.gray, interpolation='none')
   else:
-    plt.imshow(img)
+    plt.imshow(img, interpolation='none')
   plt.show()
 
 def dall():
