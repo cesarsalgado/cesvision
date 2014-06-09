@@ -32,3 +32,12 @@ def read_images_from_dir(dir_path, imgs_ext, gray=False):
   for f in files:
     imgs.append(load_img(os.path.join(dir_path, f), gray))
   return imgs
+
+def apply_to_each_channel(img, func):
+  if len(img.shape) == 2:
+    return func(img)
+  ch_list = []
+  nch = img.shape[2]
+  for i in xrange(nch):
+    ch_list.append(func(img[:,:,i]))
+  return np.dstack(tuple(ch_list))
