@@ -1,8 +1,10 @@
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 
 def show_image(img, name='image'):
-  cv2.imshow(name, img)
+  img_to_show = img.astype(np.uint8) if img.dtype != np.uint8 else img
+  cv2.imshow(name, img_to_show)
   cv2.waitKey(-1)
 
 def show_image2(img):
