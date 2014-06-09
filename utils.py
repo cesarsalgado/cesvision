@@ -19,3 +19,9 @@ def dall():
 
 def to_gray(im):
   return cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+
+def load_img(path, gray=False):
+  img = cv2.imread(path)
+  if gray:
+    img = to_gray(img)
+  return img
