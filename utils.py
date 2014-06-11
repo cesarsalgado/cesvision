@@ -41,3 +41,13 @@ def apply_to_each_channel(img, func):
   for i in xrange(nch):
     ch_list.append(func(img[:,:,i]))
   return np.dstack(tuple(ch_list))
+
+def naive_zoom(image, s):
+  n,m = image.shape
+  result = np.empty((n*s,m*s))
+  for i in xrange(n):
+    for j in xrange(m):
+      for k1 in xrange(s):
+        for k2 in xrange(s):
+          result[i*s+k1,j*s+k2] = image[i,j]
+  return result
