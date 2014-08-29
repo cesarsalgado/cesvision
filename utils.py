@@ -12,6 +12,13 @@ def show_image(img, name='image', waitkey_forever=True):
   if waitkey_forever:
     cv2.waitKey(-1)
 
+def put_in_255_range(im):
+  maxv = im.max()
+  minv = im.min()
+  result = 255*((im-minv)/float(maxv-minv))
+  result = result.astype(np.uint8)
+  return result 
+
 def show_image2(img):
   if len(img.shape) == 2:
     plt.imshow(img, cmap=plt.cm.gray, interpolation='none')
