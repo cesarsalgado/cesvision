@@ -30,6 +30,11 @@ def rectify(img):
         img[i,j] = 0
   return img
 
+def psnr(original, other):
+  original = original.astype(float)/255
+  other = other.astype(float)/255
+  return -10*np.log10(np.mean((original-other)**2))
+
 def show_image2(img):
   if len(img.shape) == 2:
     plt.imshow(img, cmap=plt.cm.gray, interpolation='none')
