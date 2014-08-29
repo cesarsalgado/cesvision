@@ -4,10 +4,13 @@ import numpy as np
 import os
 from cesarpy.io import get_all_file_names_from_dir
 
-def show_image(img, name='image'):
+def show_image(img, name='image', waitkey_forever=True):
   img_to_show = img.astype(np.uint8) if img.dtype != np.uint8 else img
+  if img.dtype == bool:
+    img_to_show *= 255
   cv2.imshow(name, img_to_show)
-  cv2.waitKey(-1)
+  if waitkey_forever:
+    cv2.waitKey(-1)
 
 def show_image2(img):
   if len(img.shape) == 2:
