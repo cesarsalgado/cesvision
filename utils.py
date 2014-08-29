@@ -49,7 +49,15 @@ def dall():
   cv2.destroyAllWindows()
 
 def to_gray(im):
-  return cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+  if im.dtype != np.uint8:
+    imdtype = im.dtype
+    im = im.astype(np.uint8)
+  else:
+    imdtype = np.uint8
+  result = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY) 
+  if imdtype != np.uint8:
+    result = result.astype(imdtype)
+  return result
 
 def load_img(path, gray=False):
   img = cv2.imread(path)
