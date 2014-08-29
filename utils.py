@@ -59,10 +59,13 @@ def to_gray(im):
     result = result.astype(imdtype)
   return result
 
-def load_img(path, gray=False):
-  img = cv2.imread(path)
+def load_img(path, gray=False, to_float=False):
   if gray:
-    img = to_gray(img)
+    img = cv2.imread(path, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+  else:
+    img = cv2.imread(path)
+  if to_float:
+    img = img.astype(float)
   return img
 
 def read_images_from_dir(dir_path, imgs_ext, gray=False, sort=True):
