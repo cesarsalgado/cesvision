@@ -19,6 +19,17 @@ def put_in_255_range(im):
   result = result.astype(np.uint8)
   return result 
 
+def rectify(img):
+  n,m = img.shape
+  for i in xrange(n):
+    for j in xrange(m):
+      v = img[i,j]
+      if v > 255:
+        img[i,j] = 255
+      elif v < 0:
+        img[i,j] = 0
+  return img
+
 def show_image2(img):
   if len(img.shape) == 2:
     plt.imshow(img, cmap=plt.cm.gray, interpolation='none')
