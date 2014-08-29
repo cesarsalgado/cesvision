@@ -35,6 +35,9 @@ def psnr(original, other):
   other = other.astype(float)/255
   return -10*np.log10(np.mean((original-other)**2))
 
+def add_noise(img, sigma):
+  return rectify(img.astype(float)+sigma*np.random.randn(*img.shape)).astype(np.uint8)
+
 def show_image2(img):
   if len(img.shape) == 2:
     plt.imshow(img, cmap=plt.cm.gray, interpolation='none')
