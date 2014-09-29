@@ -69,7 +69,7 @@ def load_img(path, gray=False, to_float=False):
   return img
 
 def read_images_from_dir(dir_path, imgs_ext, gray=False, sort=True):
-  files = cesarpy.io.get_all_file_names_from_dir(dir_path, imgs_ext, sort=sort)
+  files = get_all_file_names_from_dir(dir_path, imgs_ext, sort=sort)
   imgs = []
   for f in files:
     imgs.append(load_img(os.path.join(dir_path, f), gray))
