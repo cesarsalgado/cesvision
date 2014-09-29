@@ -1,16 +1,27 @@
-import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 from cesarpy.io import get_all_file_names_from_dir
+import skimage
+import skimage.io
+import skimage.color
+try:
+  import cv2
+  has_cv2 = True
+except ImportError, e:
+  print "Warning: opencv couldn't be imported."
+  has_cv2 = False
 
 def show_image(img, name='image', waitkey_forever=True):
-  img_to_show = img.astype(np.uint8) if img.dtype != np.uint8 else img
-  if img.dtype == bool:
-    img_to_show *= 255
-  cv2.imshow(name, img_to_show)
-  if waitkey_forever:
-    cv2.waitKey(-1)
+  if has_cv2:
+    img_to_show = img.astype(np.uint8) if img.dtype != np.uint8 else img
+    if img.dtype == bool:
+      img_to_show *= 255
+    cv2.imshow(name, img_to_show)
+    if waitkey_forever:
+      cv2.waitKey(-1)
+  else:
+    print "This method needs opencv. Use show_image2 instead."
 
 def put_in_255_range(im):
   maxv = im.max()
@@ -60,10 +71,16 @@ def to_gray(im):
   return result
 
 def load_img(path, gray=False, to_float=False):
-  if gray:
-    img = cv2.imread(path, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+  if has_cv2:
+    if gray:
+        flag = cv2.IMREAD_GRAYSCALE if cv2.__version__ == '3.0.0-alpha' else cv2.CV_LOAD_IMAGE_GRAYSCALE
+        img = cv2.imread(path, flag)
+    else:
+      img = cv2.imread(path)
   else:
-    img = cv2.imread(path)
+    img = skimage.io.imread(path, as_grey=gray)
+    if gray:
+      img = np.round(255*img).astype(np.uint8)
   if to_float:
     img = img.astype(float)
   return img
