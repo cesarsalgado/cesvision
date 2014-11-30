@@ -114,3 +114,18 @@ def naive_zoom(image, s):
       i_s, j_s = i*s, j*s
       result[i_s:i_s+s,j_s:j_s+s] = image[i,j]
   return result
+
+def get_random_crop(img, crop_size, img2=None, rand_state=None):
+  if rand_state == None:
+    rand_state = np.random.RandomState()
+  n, m = img.shape[:2]
+  nn, mm = n-crop_size+1, m-crop_size+1
+  si = rand_state.randint(nn)
+  sj = rand_state.randint(mm)
+  crop1 = img[si:si+crop_size,sj:sj+crop_size]
+  if img2 != None:
+    crop2 = img2[si:si+crop_size,sj:sj+crop_size]
+    result = (crop1, crop2)
+  else:
+    result = crop1
+  return result
