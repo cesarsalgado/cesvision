@@ -7,13 +7,13 @@ import skimage.io
 import skimage.color
 try:
   import cv2
-  has_cv2 = True
+  use_cv2 = True
 except ImportError, e:
   print "Warning: opencv couldn't be imported."
-  has_cv2 = False
+  use_cv2 = False
 
 def show_image(img, name='image', waitkey_forever=True):
-  if has_cv2:
+  if use_cv2:
     img_to_show = img.astype(np.uint8) if img.dtype != np.uint8 else img
     if img.dtype == bool:
       img_to_show *= 255
@@ -22,6 +22,13 @@ def show_image(img, name='image', waitkey_forever=True):
       cv2.waitKey(-1)
   else:
     print "This method needs opencv. Use show_image2 instead."
+
+def show_image2(img):
+  if len(img.shape) == 2:
+    plt.imshow(img, cmap=plt.cm.gray, interpolation='none')
+  else:
+    plt.imshow(img, interpolation='none')
+  plt.show()
 
 def put_in_255_range(im):
   maxv = im.max()
@@ -49,37 +56,44 @@ def psnr(original, other):
 def add_noise(img, sigma):
   return rectify(img.astype(float)+sigma*np.random.randn(*img.shape)).astype(np.uint8)
 
-def show_image2(img):
-  if len(img.shape) == 2:
-    plt.imshow(img, cmap=plt.cm.gray, interpolation='none')
-  else:
-    plt.imshow(img, interpolation='none')
-  plt.show()
-
 def dall():
   cv2.destroyAllWindows()
 
-def to_gray(im):
+def something2gray(im, rgb=True):
   if im.dtype != np.uint8:
     imdtype = im.dtype
     im = im.astype(np.uint8)
   else:
     imdtype = np.uint8
-  result = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY) 
+  if use_cv2:
+    inds = [2,1,0] if rgb else [0,1,2]
+    result = cv2.cvtColor(im[:,:,inds], cv2.COLOR_BGR2GRAY) 
+  else:
+    inds = [0,1,2] if rgb else [2,1,0]
+    result = np.round(skimage.color.rgb2gray(im[:,:,inds])*255).astype(np.uint8)
   if imdtype != np.uint8:
     result = result.astype(imdtype)
   return result
 
-def load_img(path, gray=False, to_float=False):
-  if has_cv2:
+def bgr2gray(im):
+  return something2gray(im, rgb=False)
+
+def rgb2gray(im):
+  return something2gray(im, rgb=True)
+
+def gray2bgr(img):
+  return cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+
+def load_img(path, gray=False, to_float=False, use_skimage=False):
+  if use_cv2 and not use_skimage:
     if gray:
-        flag = cv2.IMREAD_GRAYSCALE if cv2.__version__ == '3.0.0-alpha' else cv2.CV_LOAD_IMAGE_GRAYSCALE
-        img = cv2.imread(path, flag)
+      flag = cv2.IMREAD_GRAYSCALE if cv2.__version__ == '3.0.0-alpha' else cv2.CV_LOAD_IMAGE_GRAYSCALE
+      img = cv2.imread(path, flag)
     else:
       img = cv2.imread(path)
   else:
     img = skimage.io.imread(path, as_grey=gray)
-    if gray:
+    if gray and img.max() <= 1:
       img = np.round(255*img).astype(np.uint8)
   if to_float:
     img = img.astype(float)
