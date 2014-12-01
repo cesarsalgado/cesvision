@@ -99,11 +99,15 @@ def load_img(path, gray=False, to_float=False, use_skimage=False):
     img = img.astype(float)
   return img
 
-def read_images_from_dir(dir_path, imgs_ext, gray=False, sort=True):
+def read_images_from_dir(dir_path, imgs_ext, gray=False, sort=True, use_skimage=False, inds=None, starting_from=0):
   files = get_all_file_names_from_dir(dir_path, imgs_ext, sort=sort)
   imgs = []
+  if inds != None:
+    files = np.array(files)[inds]
+  else:
+    files = files[starting_from:]
   for f in files:
-    imgs.append(load_img(os.path.join(dir_path, f), gray))
+    imgs.append(load_img(os.path.join(dir_path, f), gray, use_skimage=use_skimage))
   return imgs
 
 def apply_to_each_channel(img, func):
