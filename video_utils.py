@@ -3,6 +3,7 @@ import cv
 import os
 from cesarpy.io import get_all_file_names_from_dir
 import numpy as np
+import utils
 
 def get_right_empty(h, w, nframes, want_gray, ravel, dtype):
   if want_gray:
@@ -51,26 +52,50 @@ def get_all_frames(path, want_gray=True, ravel=True, dtype=np.uint8):
   return frames
 
 class VideoIter:
-  def __init__(self, path, ravel=False):
+  def __init__(self, path, ravel=False, use_skimage=False, gray=False, inds=None, starting_from=0):
+    self.inds = inds
+    self.gray = gray
+    self.use_skimage = use_skimage
     self.isfile = os.path.isfile(path)
     if self.isfile:
+      if use_skimage:
+        raise Exception('If you are reading from a video file you cannot use skimage.')
       self.cap = cv2.VideoCapture(path)
-      self.nframes = self.cap.get(cv.CV_CAP_PROP_FRAME_COUNT)
+      self.nframes = int(self.cap.get(cv.CV_CAP_PROP_FRAME_COUNT))
+      self.count = 0
+      if self.inds == None and starting_from != 0:
+        while self.count < starting_from:
+          ok, frame = self.cap.read()
+          self.count += 1
     else:
       self.files = get_all_file_names_from_dir(path, sort=True, withpath=True)
       self.nframes = len(self.files)
-    self.count = 0 
-  def get_next(self):
+      self.count = starting_from
+    self.meta_idx = 0
+  def __iter__(self):
+    return self
+  def next(self):
     if self.isfile:
       ok, frame = self.cap.read()
+      if self.inds != None:
+        if self.meta_idx < len(self.inds):
+          while self.count < self.inds[self.meta_idx]:
+            self.count += 1
+            ok, frame = self.cap.read()
+        else:
+          ok = False
+      if ok and self.gray:
+        frame = utils.bgr2gray(frame)
     else:
-      if self.count >= self.nframes:
+      if self.count >= self.nframes or (self.inds != None and self.meta_idx >= len(self.inds)):
         ok = False
       else:
         ok = True
-        frame = cv2.imread(self.files[self.count])
+        idx = self.inds[self.meta_idx] if self.inds != None else self.count
+        frame = utils.load_img(self.files[idx], gray=self.gray, use_skimage=self.use_skimage)
     if not ok:
-      return None
+      raise StopIteration
     else:
+      self.meta_idx += 1
       self.count += 1
       return frame
