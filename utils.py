@@ -153,3 +153,19 @@ def get_random_crop(img, crop_size, img2=None, rand_state=None):
   else:
     result = crop1
   return result
+
+def mask2rect(mask):
+  rs,cs = np.where(mask!=0)
+  if rs.size != 0:
+    maxy = rs.max()
+    miny = rs.min()
+  else:
+    maxy = mask.shape[0]-1
+    miny = 0
+  if cs.size != 0:
+    maxx = cs.max()
+    minx = cs.min()
+  else:
+    maxx = mask.shape[1]-1
+    minx = 0
+  return (minx, miny, maxx+1, maxy+1)
