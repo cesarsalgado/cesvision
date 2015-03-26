@@ -1,5 +1,10 @@
-import cv2
-import cv
+try:
+  import cv2
+  import cv
+  use_cv2 = True
+except ImportError, e:
+  print "Warning: opencv couldn't be imported."
+  use_cv2 = False
 import os
 from cesarpy.io import get_all_file_names_from_dir
 import numpy as np
