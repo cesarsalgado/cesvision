@@ -1,3 +1,4 @@
+from itertools import izip
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -99,15 +100,20 @@ def load_img(path, gray=False, to_float=False, use_skimage=False):
     img = img.astype(float)
   return img
 
-def read_images_from_dir(dir_path, imgs_ext, gray=False, sort=True, use_skimage=False, inds=None, starting_from=0):
+def read_images_from_dir(dir_path, imgs_ext, gray=False, sort=True, use_skimage=False, inds=None, starting_from=0, stack3frames=False):
   files = get_all_file_names_from_dir(dir_path, imgs_ext, sort=sort)
   imgs = []
-  if inds != None:
-    files = np.array(files)[inds]
-  else:
-    files = files[starting_from:]
-  for f in files:
-    imgs.append(load_img(os.path.join(dir_path, f), gray, use_skimage=use_skimage))
+  if inds == None:
+    inds = np.arange(starting_from,len(files))
+  new_files = np.array(files)[inds]
+  for f,i in izip(new_files,inds):
+    img0 = load_img(os.path.join(dir_path, f), gray, use_skimage=use_skimage)
+    if stack3frames:
+      img1 = load_img(os.path.join(dir_path, files[max(i-1,0)]), gray, use_skimage=use_skimage)
+      img2 = load_img(os.path.join(dir_path, files[max(i-2,0)]), gray, use_skimage=use_skimage)
+      imgs.append(np.dstack((img0,img1,img2)))
+    else:
+      imgs.append(img0)
   return imgs
 
 def apply_to_each_channel(img, func):
