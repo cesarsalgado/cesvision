@@ -167,3 +167,10 @@ def mask2rect(mask):
     maxx = mask.shape[1]-1
     minx = 0
   return (minx, miny, maxx+1, maxy+1)
+
+def draw_unfilled_rectangle(img, rect, color):
+  x1,y1,x2,y2 = rect
+  img[y1,x1:x2] = color
+  img[y2,x1:x2] = color
+  img[y1:y2,x1] = color
+  img[y1:y2,x2] = color
