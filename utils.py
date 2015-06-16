@@ -45,15 +45,7 @@ def put_in_255_range(im):
   return result
 
 def rectify(img):
-  n,m = img.shape
-  for i in xrange(n):
-    for j in xrange(m):
-      v = img[i,j]
-      if v > 255:
-        img[i,j] = 255
-      elif v < 0:
-        img[i,j] = 0
-  return img
+  return np.minimum(np.maximum(img, 0), 255)
 
 def psnr(original, other):
   original = original.astype(float)/255
