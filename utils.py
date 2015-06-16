@@ -32,11 +32,17 @@ def show_image2(img):
   plt.show()
 
 def put_in_255_range(im):
+  if im.dtype == np.bool:
+    return im.astype(np.uint8)*255
   maxv = im.max()
   minv = im.min()
-  result = 255*((im-minv)/float(maxv-minv))
+  div = float(maxv-minv)
+  if div == 0:
+    result = im
+  else:
+    result = 255*((im-minv)/div)
   result = result.astype(np.uint8)
-  return result 
+  return result
 
 def rectify(img):
   n,m = img.shape
