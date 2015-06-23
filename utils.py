@@ -6,6 +6,7 @@ from cesarpy.io import get_all_file_names_from_dir
 import skimage
 import skimage.io
 import skimage.color
+import math
 try:
     import cv2
     use_cv2 = True
@@ -174,3 +175,35 @@ def draw_unfilled_rectangle(img, rect, color):
     img[y2,x1:x2] = color
     img[y1:y2,x1] = color
     img[y1:y2,x2] = color
+
+# helper method for uniquecolors method
+# base on this answer: http://stackoverflow.com/a/2142206
+def rgbcolor(h, f):
+    """Convert a color specified by h-value and f-value to an RGB
+    three-tuple."""
+    v = 1.0
+    s = 1.0
+    p = 0.0
+    # q = 1 - f
+    # t = f
+    if h == 0:
+        return v, f, p
+    elif h == 1:
+        return 1 - f, v, p
+    elif h == 2:
+        return p, v, f
+    elif h == 3:
+        return p, 1 - f, v
+    elif h == 4:
+        return f, p, v
+    elif h == 5:
+        return v, p, 1 - f
+
+# base on this answer: http://stackoverflow.com/a/2142206
+def uniquecolors(n):
+    """Compute a list of distinct colors, ecah of which is
+    represented as an RGB three-tuple"""
+    hues = [360.0 / n * i for i in range(n)]
+    hs = [math.floor(hue / 60) % 6 for hue in hues]
+    fs = [hue / 60 - math.floor(hue / 60) for hue in hues]
+    return np.array([put_in_255_range(np.array(rgbcolor(h, f))) for h, f in zip(hs, fs)])
