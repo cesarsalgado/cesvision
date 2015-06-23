@@ -207,3 +207,8 @@ def uniquecolors(n):
     hs = [math.floor(hue / 60) % 6 for hue in hues]
     fs = [hue / 60 - math.floor(hue / 60) for hue in hues]
     return np.array([put_in_255_range(np.array(rgbcolor(h, f))) for h, f in zip(hs, fs)])
+
+def blend_img_with_color(img, color):
+    if len(img.shape) == 2:
+        img = gray2bgr(img)
+    return rectify(0.5*img.astype(float)+0.5*color.astype(float))
