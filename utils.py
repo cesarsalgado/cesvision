@@ -6,6 +6,7 @@ from cesarpy.io import get_all_file_names_from_dir
 import skimage
 import skimage.io
 import skimage.color
+import skimage.measure
 import math
 try:
     import cv2
@@ -212,3 +213,13 @@ def blend_img_with_color(img, color):
     if len(img.shape) == 2:
         img = gray2bgr(img)
     return rectify(0.5*img.astype(float)+0.5*color.astype(float))
+
+def remove_dim_xy_less_than(mask, th):
+    regions, n_regions = skimage.measure.label(mask, return_num=True, neighbors=4, background=0)
+    result = mask.copy()
+    for i in xrange(n_regions):
+        local_mask = (regions == i)
+        x0,y0,x1,y1 = mask2rect(local_mask)
+        if x1-x0 < th or y1-y0 < th:
+            result[local_mask] = False
+    return result
