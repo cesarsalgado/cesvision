@@ -47,7 +47,7 @@ def put_in_255_range(im):
     return result
 
 def rectify(img):
-    return np.minimum(np.maximum(img, 0), 255).astype(np.uint8)
+    return np.clip(img).astype(np.uint8)
 
 def psnr(original, other):
     original = original.astype(float)/255
