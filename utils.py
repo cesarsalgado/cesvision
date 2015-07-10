@@ -33,9 +33,11 @@ def show_image2(img):
         plt.imshow(img, interpolation='none')
     plt.show()
 
-def put_in_255_range(im):
+def put_in_255_range(im, input_01=False):
     if im.dtype == np.bool:
         return im.astype(np.uint8)*255
+    if input_01:
+        return (im*255).round().astype(np.uint8)
     maxv = im.max()
     minv = im.min()
     div = float(maxv-minv)
