@@ -102,8 +102,8 @@ def load_img(path, gray=False, to_float=False, use_skimage=False):
         img = img.astype(float)
     return img
 
-def read_images_from_dir(dir_path, imgs_ext, gray=False, sort=True, use_skimage=False, inds=None, starting_from=0, stack3frames=False, smart_sort=True):
-    files = get_all_file_names_from_dir(dir_path, imgs_ext, sort=sort, smart_sort=smart_sort)
+def read_images_from_dir(dir_path, imgs_ext, gray=False, sort=True, use_skimage=False, inds=None, starting_from=0, stack3frames=False, numerical_sort=True):
+    files = get_all_file_names_from_dir(dir_path, imgs_ext, sort=sort, numerical_sort=numerical_sort)
     imgs = []
     if inds == None:
         inds = np.arange(starting_from,len(files))
