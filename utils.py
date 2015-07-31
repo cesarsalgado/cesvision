@@ -1,6 +1,7 @@
 from itertools import izip
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.linalg import norm
 import os
 from cesarpy.io import get_all_file_names_from_dir
 import skimage
@@ -202,7 +203,7 @@ def rgbcolor(h, f):
     elif h == 5:
         return v, p, 1 - f
 
-# base on this answer: http://stackoverflow.com/a/2142206
+# based on this answer: http://stackoverflow.com/a/2142206
 def uniquecolors(n):
     """Compute a list of distinct colors, ecah of which is
     represented as an RGB three-tuple"""
@@ -223,5 +224,17 @@ def remove_dim_xy_less_than(mask, th):
         local_mask = (regions == i)
         x0,y0,x1,y1 = mask2rect(local_mask)
         if x1-x0 < th or y1-y0 < th:
+            result[local_mask] = False
+    return result
+
+def remove_rot_side_less_than(mask, th):
+    regions, n_regions = skimage.measure.label(mask, return_num=True, neighbors=4, background=0)
+    result = mask.copy()
+    for i in xrange(n_regions):
+        local_mask = (regions == i)
+        contours, hierarchy = cv2.findContours(local_mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        rect = cv2.minAreaRect(contours[0])
+        points = np.array(cv2.cv.BoxPoints(rect))
+        if norm(points[0]-points[1]) < th or norm(points[1]-points[2]) < th:
             result[local_mask] = False
     return result
